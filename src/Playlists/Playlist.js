@@ -3,7 +3,7 @@ import {
     View,
     Text,
     StyleSheet,
-    ScrollView
+    ScrollView, TouchableWithoutFeedback
 } from 'react-native';
 
 export default class Playlist extends React.Component {
@@ -53,6 +53,11 @@ export default class Playlist extends React.Component {
             )
     }
 
+    viewTrack = (track) => {
+        this.props.navigation.navigate('Track', {track});
+        console.log(track);
+    }
+
     render() {
         console.log(this.state.tracks);
         if (this.state.tracks.length >  0) {
@@ -60,11 +65,16 @@ export default class Playlist extends React.Component {
                 <ScrollView>
                     {this.state.tracks.map(track => (
                         <View style={styles.listItem} key={track.added_at}>
+                            <TouchableWithoutFeedback onPress={() => this.viewTrack(track)}>
+                                <View>
                             {track.track.artists.map(artist => (
                                 <Text key={artist.id}>{artist.name}</Text>
                             ))}
                             <Text>{track.track.name}</Text>
+                                </View>
+                        </TouchableWithoutFeedback>
                         </View>
+
                     ))}
                 </ScrollView>
             );

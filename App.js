@@ -15,7 +15,6 @@ import token from './src/components/Login/Token';
 
 export default class App extends Component {
 
-
     constructor(props) {
         super(props);
         this.state = {
@@ -30,9 +29,8 @@ export default class App extends Component {
             this.setState({
                 apiToken: tkn
             });
-            console.log(this.state.apiToken);
             if ( this.state.apiToken) {
-                this.handleClick();
+                this.loadPlaylists();
             }
 
         } catch (e) {
@@ -46,7 +44,7 @@ export default class App extends Component {
         this.setState({Playlists})
     }
 
-    handleClick = () => {
+    loadPlaylists = () => {
 
         if (this.state.apiToken != null) {
 

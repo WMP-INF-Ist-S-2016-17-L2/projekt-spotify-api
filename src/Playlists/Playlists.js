@@ -1,6 +1,7 @@
 import React from 'react';
 import {
     View,
+    ScrollView,
     Text,
     StyleSheet,
     Image,
@@ -16,7 +17,7 @@ export default class Playlists extends React.Component {
     render() {
         if (this.props.screenProps.playlists.length > 0) {
             return (
-                <View>
+                <ScrollView>
                     {this.props.screenProps.playlists.map(playlist => (
                         <View key={playlist.id}>
                             {playlist.images.length > 0 ?
@@ -40,7 +41,7 @@ export default class Playlists extends React.Component {
                             </Text>
                         </View>
                     ))}
-                </View>
+                </ScrollView>
 
             );
         }

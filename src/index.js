@@ -3,6 +3,7 @@ import React from 'react';
 import AddPlaylist from './AddPlaylist/AddPlaylist';
 import Playlists from './Playlists/Playlists';
 import Playlist from './Playlists/Playlist';
+import Track from './Track/Track';
 
 import {
     createStackNavigator,
@@ -13,7 +14,8 @@ import {colors} from "./theme";
 
 const PlaylistsNav = createStackNavigator({
     Playlists: {screen: Playlists},
-    Playlist: {screen: Playlist}
+    Playlist: {screen: Playlist},
+    Track: {screen: Track}
 }, {
     navigationOptions: {
         headerStyle: {
