@@ -1,27 +1,18 @@
 import React, {Component} from 'react';
-import {
-    Platform,
-    StyleSheet,
-    Text,
-    View
-} from 'react-native';
-
-import PlaylistsButton from './components/PlaylistsButton';
-import Playlists from './components/Playlists';
 
 import Tabs from './src';
 
-import token from './src/components/Login/Token';
+import token from './src/components/Token/Token';
 
 export default class App extends Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            items: [],
-            apiToken: null
-        }
+    state = {
+        items: [],
+        apiToken: null,
+        error: null
     }
+
+
 
     async componentDidMount() {
         try {
@@ -29,7 +20,8 @@ export default class App extends Component {
             this.setState({
                 apiToken: tkn
             });
-            if ( this.state.apiToken) {
+            console.log(this.state);
+            if (this.state.apiToken) {
                 this.loadPlaylists();
             }
 
@@ -41,7 +33,7 @@ export default class App extends Component {
     addPlaylist = (playlist) => {
         const playlists = this.state.items
         playlists.push(playlist)
-        this.setState({Playlists})
+        this.setState({playlists});
     }
 
     loadPlaylists = () => {
@@ -62,18 +54,21 @@ export default class App extends Component {
                     (result) => {
                         if (result.error) {
                             this.setState({
-                                items: result.error,
+                                items: [],
+                                error: result.error
                             });
+                            console.log(result);
+                            console.log(this.state);
                         } else {
                             this.setState({
                                 items: result.items,
                             });
+                            console.log('ss');
                         }
-                        console.log(result);
+                                // console.log(result);
                     },
                     (error) => {
                         this.setState({
-                            isLoaded: true,
                             error
                         });
                     }
@@ -81,54 +76,16 @@ export default class App extends Component {
         }
     }
 
-
-    oldReturn = () => {
-        return (
-
-            <View style={styles.container}>
-                <PlaylistsButton onGetPlaylists={this.handleClick}/>
-                <Playlists playlists={this.state.items}/>
-                <Tabs
-                    screenProps={{
-                        playlists: this.state.items,
-                        addPlaylist: this.addPlaylist,
-                        loadPlaylistsBtn: this.handleClick
-                    }}
-                />
-            </View>
-        );
-
-    }
-
-
     render() {
         return (
             <Tabs
                 screenProps={{
                     playlists: this.state.items,
                     addPlaylist: this.addPlaylist,
-                    currToken: this.state.apiToken
+                    currToken: this.state.apiToken,
+                    error: this.state.error
                 }}
             />
         );
     }
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#F5FCFF',
-    },
-    welcome: {
-        fontSize: 20,
-        textAlign: 'center',
-        margin: 10,
-    },
-    instructions: {
-        textAlign: 'center',
-        color: '#333333',
-        marginBottom: 5,
-    },
-});

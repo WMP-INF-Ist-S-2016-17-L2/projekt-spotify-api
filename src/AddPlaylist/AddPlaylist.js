@@ -7,8 +7,9 @@ import {
     TouchableOpacity
 } from 'react-native';
 
-import uuidV4 from 'uuid/v4'
 import {colors} from "../theme";
+
+import Playlists from '../Playlists/Playlists';
 
 export default class AddPlaylist extends React.Component {
     state = {
@@ -18,7 +19,6 @@ export default class AddPlaylist extends React.Component {
     }
 
     onChangeText = (key, value) => {
-        console.log([key], value);
         this.setState({
             [key]: value
         })
@@ -32,7 +32,7 @@ export default class AddPlaylist extends React.Component {
                 method: 'POST',
                 body: JSON.stringify({
                     "name": this.state.playlist,
-                    "public": false
+                    "public": true
                 }),
                 headers: {
                     'Content-Type': 'application/json',
@@ -48,6 +48,7 @@ export default class AddPlaylist extends React.Component {
                             error: result.error
                         });
                     } else {
+                        this.props.screenProps.addPlaylist(result);
                         this.props.navigation.navigate('Playlists');
                     }
                 },

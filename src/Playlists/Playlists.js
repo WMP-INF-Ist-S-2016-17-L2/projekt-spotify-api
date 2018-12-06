@@ -5,8 +5,10 @@ import {
     Text,
     StyleSheet,
     Image,
-    TouchableWithoutFeedback
+    TouchableWithoutFeedback,
+    ActivityIndicator
 } from 'react-native';
+import {colors} from "../theme";
 
 export default class Playlists extends React.Component {
 
@@ -15,6 +17,7 @@ export default class Playlists extends React.Component {
     }
 
     render() {
+
         if (this.props.screenProps.playlists.length > 0) {
             return (
                 <ScrollView>
@@ -45,9 +48,57 @@ export default class Playlists extends React.Component {
 
             );
         }
+        if (this.props.screenProps.error) {
+            return (
+                <View style={styles.container}>
+                    <Text style={styles.error}>
+                        Wystąpił błąd podczas ładowania playlisty
+                    </Text>
+                    <Text>{this.props.screenProps.error.message}</Text>
+                </View>
+            );
+        }
+
         return (
-            <View><Text>playlist</Text></View>
+            <View style={styles.container}>
+                <ActivityIndicator size="large" color="#0000ff"/>
+            </View>
         );
 
     }
 }
+
+const styles = StyleSheet.create({
+    input: {
+        backgroundColor: '#ffffff',
+        margin: 10,
+        paddingHorizontal: 8,
+        height: 50
+    },
+    button: {
+        height: 50,
+        backgroundColor: '#333',
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: 10
+    },
+    buttonText: {
+        color: '#fff'
+    },
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+
+    },
+    heading: {
+        fontSize: 30,
+        textAlign: 'center',
+        margin: 10,
+        color: '#fff'
+    },
+    error: {
+        color: colors.error,
+        textAlign: 'center'
+    },
+})

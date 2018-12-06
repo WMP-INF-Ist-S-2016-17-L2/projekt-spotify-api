@@ -6,6 +6,8 @@ import {
     ScrollView, TouchableWithoutFeedback
 } from 'react-native';
 
+import {colors} from '../theme';
+
 export default class Playlist extends React.Component {
 
     constructor(props) {
@@ -55,7 +57,33 @@ export default class Playlist extends React.Component {
 
     viewTrack = (track) => {
         this.props.navigation.navigate('Track', {track});
-        console.log(track);
+    }
+
+    deletePlaylist = () =>{
+        fetch("https://api.spotify.com/v1/playlists/" + this.props.navigation.state.params.playlist.id + "/followers",
+            {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + this.props.screenProps.currToken
+                }
+
+            })
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    if (result.error) { //Wystąpił błąd
+                        this.setState({
+                            error: result.error
+                        });
+                    } else {
+                        // this.setState({ //Poprawna odpowiedź
+                        //     tracks: result.items,
+                        // });
+                    }
+                    console.log(result);
+                }
+            )
     }
 
     render() {
@@ -95,6 +123,16 @@ export default class Playlist extends React.Component {
                 <Text style={styles.welcome}>
                     Playlista jest pusta
                 </Text>
+                <TouchableWithoutFeedback
+                    onPress={() => this.deletePlaylist()}
+                    style={styles.button}>
+                    <View>
+                        <Text style={styles.buttonText}>
+                            Usuń playliste
+                        </Text>
+                    </View>
+                </TouchableWithoutFeedback>
+
             </View>
         );
     }
@@ -120,6 +158,17 @@ const styles = StyleSheet.create({
     },
 
     error: {
-      color: '#ff0000'
-    }
+      color: colors.error
+    },
+    button: {
+        height: 50,
+        backgroundColor: '#000',
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: 10
+    },
+    buttonText: {
+        color: '#fff'
+    },
+
 });
