@@ -3,4 +3,9 @@ const colors = {
     error: '#ff0000'
 }
 
-export { colors }
+const padding = {
+    paddingVertical: 10,
+    paddingHorizontal: 15
+}
+
+export { colors, padding }

@@ -3,10 +3,12 @@ import {
     View,
     Text,
     StyleSheet,
-    ScrollView, TouchableWithoutFeedback
+    ScrollView,
+    TouchableOpacity
 } from 'react-native';
 
-import {colors} from '../theme';
+import {colors, padding} from '../theme';
+import Playlists from './Playlists';
 
 export default class Playlist extends React.Component {
 
@@ -59,7 +61,7 @@ export default class Playlist extends React.Component {
         this.props.navigation.navigate('Track', {track});
     }
 
-    deletePlaylist = () =>{
+    deletePlaylist = () => {
         fetch("https://api.spotify.com/v1/playlists/" + this.props.navigation.state.params.playlist.id + "/followers",
             {
                 method: 'DELETE',
@@ -76,31 +78,34 @@ export default class Playlist extends React.Component {
                         this.setState({
                             error: result.error
                         });
-                    } else {
-                        // this.setState({ //Poprawna odpowiedź
-                        //     tracks: result.items,
-                        // });
+                        return;
                     }
-                    console.log(result);
+                },
+                (error) => {
+                    this.setState({error});
+                    return;
                 }
             )
+
+        this.props.navigation.navigate('Playlists');
+        this.props.screenProps.removePlaylist(this.props.navigation.state.params.playlist)
     }
 
     render() {
-        console.log(this.state.tracks);
-        if (this.state.tracks.length >  0) {
+        // console.log(this.state.tracks);
+        if (this.state.tracks.length > 0) {
             return (
                 <ScrollView>
                     {this.state.tracks.map(track => (
                         <View style={styles.listItem} key={track.added_at}>
-                            <TouchableWithoutFeedback onPress={() => this.viewTrack(track)}>
+                            <TouchableOpacity onPress={() => this.viewTrack(track)}>
                                 <View>
-                            {track.track.artists.map(artist => (
-                                <Text key={artist.id}>{artist.name}</Text>
-                            ))}
-                            <Text>{track.track.name}</Text>
+                                    {track.track.artists.map(artist => (
+                                        <Text key={artist.id}>{artist.name}</Text>
+                                    ))}
+                                    <Text>{track.track.name}</Text>
                                 </View>
-                        </TouchableWithoutFeedback>
+                            </TouchableOpacity>
                         </View>
 
                     ))}
@@ -118,20 +123,20 @@ export default class Playlist extends React.Component {
             );
         }
 
-        return(
+        return (
             <View style={styles.container}>
                 <Text style={styles.welcome}>
                     Playlista jest pusta
                 </Text>
-                <TouchableWithoutFeedback
+                <TouchableOpacity
                     onPress={() => this.deletePlaylist()}
-                    style={styles.button}>
-                    <View>
+                    >
+                    <View style={styles.button}>
                         <Text style={styles.buttonText}>
                             Usuń playliste
                         </Text>
                     </View>
-                </TouchableWithoutFeedback>
+                </TouchableOpacity>
 
             </View>
         );
@@ -144,31 +149,27 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#F5FCFF',
+        backgroundColor: '#F5FCFF'
     },
     welcome: {
         fontSize: 20,
         textAlign: 'center',
-        margin: 10,
+        margin: 10
     },
-
-    listItem: {
-        borderBottomColor: '#000000',
-        borderBottomWidth: 2
-    },
-
     error: {
-      color: colors.error
+        color: colors.error
     },
     button: {
         height: 50,
-        backgroundColor: '#000',
+        backgroundColor: colors.error,
         justifyContent: 'center',
         alignItems: 'center',
-        margin: 10
+        margin: 10,
+        paddingHorizontal: padding.paddingHorizontal,
+        paddingVertical: padding.paddingVertical
     },
     buttonText: {
-        color: '#fff'
-    },
+        color: '#ffffff'
+    }
 
 });

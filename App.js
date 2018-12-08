@@ -12,15 +12,13 @@ export default class App extends Component {
         error: null
     }
 
-
-
     async componentDidMount() {
         try {
             const tkn = await token();
             this.setState({
                 apiToken: tkn
             });
-            console.log(this.state);
+
             if (this.state.apiToken) {
                 this.loadPlaylists();
             }
@@ -34,6 +32,16 @@ export default class App extends Component {
         const playlists = this.state.items
         playlists.push(playlist)
         this.setState({playlists});
+    }
+
+    removePlaylist = (playlist) => {
+        var array = [...this.state.items];
+        var index = array.indexOf(playlist);
+
+        if (index !== -1) {
+            array.splice(index, 1);
+            this.setState({items: array});
+        }
     }
 
     loadPlaylists = () => {
@@ -57,15 +65,11 @@ export default class App extends Component {
                                 items: [],
                                 error: result.error
                             });
-                            console.log(result);
-                            console.log(this.state);
                         } else {
                             this.setState({
                                 items: result.items,
                             });
-                            console.log('ss');
                         }
-                                // console.log(result);
                     },
                     (error) => {
                         this.setState({
@@ -82,6 +86,7 @@ export default class App extends Component {
                 screenProps={{
                     playlists: this.state.items,
                     addPlaylist: this.addPlaylist,
+                    removePlaylist: this.removePlaylist,
                     currToken: this.state.apiToken,
                     error: this.state.error
                 }}

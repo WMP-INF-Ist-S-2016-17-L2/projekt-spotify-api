@@ -6,7 +6,8 @@ import {
     StyleSheet,
     Image,
     TouchableWithoutFeedback,
-    ActivityIndicator
+    ActivityIndicator,
+    Dimensions
 } from 'react-native';
 import {colors} from "../theme";
 
@@ -21,29 +22,31 @@ export default class Playlists extends React.Component {
         if (this.props.screenProps.playlists.length > 0) {
             return (
                 <ScrollView>
+                    <View style={styles.container}>
                     {this.props.screenProps.playlists.map(playlist => (
-                        <View key={playlist.id}>
+                        <View key={playlist.id} style={styles.thumbnailWrapper}>
                             {playlist.images.length > 0 ?
                                 <TouchableWithoutFeedback onPress={() => this.viewPlaylist(playlist)}>
                                     <Image
-                                        style={{width: 100, height: 100}}
+                                        style={styles.thumbnail}
                                         source={{uri: playlist.images[0].url}}
                                     />
                                 </TouchableWithoutFeedback>
                                 :
                                 <TouchableWithoutFeedback onPress={() => this.viewPlaylist(playlist)}>
                                     <Image
-                                        style={{width: 100, height: 100}}
+                                        style={styles.thumbnail}
                                         source={{uri: "https://www.fillmurray.com/150/150"}}
                                     />
                                 </TouchableWithoutFeedback>
                             }
 
-                            <Text>
+                            <Text style={styles.thumbnailText}>
                                 {playlist.name}
                             </Text>
                         </View>
                     ))}
+                    </View>
                 </ScrollView>
 
             );
@@ -60,7 +63,7 @@ export default class Playlists extends React.Component {
         }
 
         return (
-            <View style={styles.container}>
+            <View style={styles.thumbnailWrapper}>
                 <ActivityIndicator size="large" color="#0000ff"/>
             </View>
         );
@@ -69,6 +72,10 @@ export default class Playlists extends React.Component {
 }
 
 const styles = StyleSheet.create({
+    thumbnailWrapper: {
+        display: 'flex',
+        flexDirection: 'column'
+    },
     input: {
         backgroundColor: '#ffffff',
         margin: 10,
@@ -86,9 +93,12 @@ const styles = StyleSheet.create({
         color: '#fff'
     },
     container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
+        display: 'flex',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+        flexWrap: 'wrap',
+        flexDirection: 'row',
+        marginTop: 20
 
     },
     heading: {
@@ -101,4 +111,14 @@ const styles = StyleSheet.create({
         color: colors.error,
         textAlign: 'center'
     },
+
+    thumbnail: {
+        width: 150,
+        height: 150,
+        margin: 15
+    },
+    thumbnailText: {
+        textAlign: 'center'
+    }
+
 })
