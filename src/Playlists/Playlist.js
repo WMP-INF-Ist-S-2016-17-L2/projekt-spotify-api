@@ -9,6 +9,7 @@ import {
 
 import {colors, padding} from '../theme';
 import Playlists from './Playlists';
+import PreLoader from "../components/PreLoader/PreLoader";
 
 export default class Playlist extends React.Component {
 
@@ -16,7 +17,8 @@ export default class Playlist extends React.Component {
         super(props);
         this.state = {
             tracks: [],
-            error: null
+            error: null,
+            isLoaded: false
         }
     }
 
@@ -46,11 +48,13 @@ export default class Playlist extends React.Component {
                 (result) => {
                     if (result.error) { //Wystąpił błąd
                         this.setState({
-                            error: result.error
+                            error: result.error,
+                            isLoaded: true
                         });
                     } else {
                         this.setState({ //Poprawna odpowiedź
                             tracks: result.items,
+                            isLoaded: true
                         });
                     }
                 }
@@ -92,18 +96,26 @@ export default class Playlist extends React.Component {
     }
 
     render() {
-        // console.log(this.state.tracks);
+
+        if (!this.state.isLoaded) {
+            return (
+                <PreLoader/>
+            );
+        }
+
         if (this.state.tracks.length > 0) {
             return (
-                <ScrollView>
+                <ScrollView style={styles.pageWrapper}>
                     {this.state.tracks.map(track => (
                         <View style={styles.listItem} key={track.added_at}>
                             <TouchableOpacity onPress={() => this.viewTrack(track)}>
                                 <View>
-                                    {track.track.artists.map(artist => (
-                                        <Text key={artist.id}>{artist.name}</Text>
-                                    ))}
-                                    <Text>{track.track.name}</Text>
+                                    <Text style={styles.trackName}>{track.track.name}</Text>
+                                    <View style={styles.artistWrapper}>
+                                        {track.track.artists.map(artist => (
+                                            <Text style={styles.artistName} key={artist.id}> {artist.name}</Text>
+                                        ))}
+                                    </View>
                                 </View>
                             </TouchableOpacity>
                         </View>
@@ -130,7 +142,7 @@ export default class Playlist extends React.Component {
                 </Text>
                 <TouchableOpacity
                     onPress={() => this.deletePlaylist()}
-                    >
+                >
                     <View style={styles.button}>
                         <Text style={styles.buttonText}>
                             Usuń playliste
@@ -149,7 +161,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#F5FCFF'
+        backgroundColor: colors.backgroundPrimary
     },
     welcome: {
         fontSize: 20,
@@ -170,6 +182,26 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         color: '#ffffff'
+    },
+    listItem: {
+        borderBottomColor: colors.primary,
+        borderBottomWidth: 1,
+        marginBottom: 3,
+        padding: 8
+    },
+    trackName: {
+        color: colors.textColor,
+        fontSize: 15,
+        paddingLeft: 2
+    },
+    pageWrapper: {
+        backgroundColor: colors.backgroundPrimary
+    },
+    artistName: {
+        color: colors.fadedTextColor
+    },
+    artistWrapper: {
+        display: 'flex',
+        flexDirection: 'row'
     }
-
 });

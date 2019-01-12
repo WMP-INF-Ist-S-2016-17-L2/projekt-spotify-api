@@ -5,11 +5,11 @@ import {
     Text,
     StyleSheet,
     Image,
-    TouchableWithoutFeedback,
-    ActivityIndicator,
-    Dimensions
+    TouchableWithoutFeedback
 } from 'react-native';
 import {colors} from "../theme";
+import PreLoader from "../components/PreLoader/PreLoader";
+import Search from "../Search/Search";
 
 export default class Playlists extends React.Component {
 
@@ -21,31 +21,32 @@ export default class Playlists extends React.Component {
 
         if (this.props.screenProps.playlists.length > 0) {
             return (
-                <ScrollView>
+                <ScrollView style={styles.pageWrapper}>
+                    <Search token={this.props.screenProps.currToken}/>
                     <View style={styles.container}>
-                    {this.props.screenProps.playlists.map(playlist => (
-                        <View key={playlist.id} style={styles.thumbnailWrapper}>
-                            {playlist.images.length > 0 ?
-                                <TouchableWithoutFeedback onPress={() => this.viewPlaylist(playlist)}>
-                                    <Image
-                                        style={styles.thumbnail}
-                                        source={{uri: playlist.images[0].url}}
-                                    />
-                                </TouchableWithoutFeedback>
-                                :
-                                <TouchableWithoutFeedback onPress={() => this.viewPlaylist(playlist)}>
-                                    <Image
-                                        style={styles.thumbnail}
-                                        source={{uri: "https://www.fillmurray.com/150/150"}}
-                                    />
-                                </TouchableWithoutFeedback>
-                            }
+                        {this.props.screenProps.playlists.map(playlist => (
+                            <View key={playlist.id} style={styles.thumbnailWrapper}>
+                                {playlist.images.length > 0 ?
+                                    <TouchableWithoutFeedback onPress={() => this.viewPlaylist(playlist)}>
+                                        <Image
+                                            style={styles.thumbnail}
+                                            source={{uri: playlist.images[0].url}}
+                                        />
+                                    </TouchableWithoutFeedback>
+                                    :
+                                    <TouchableWithoutFeedback onPress={() => this.viewPlaylist(playlist)}>
+                                        <Image
+                                            style={styles.thumbnail}
+                                            source={{uri: "https://www.fillmurray.com/150/150"}}
+                                        />
+                                    </TouchableWithoutFeedback>
+                                }
 
-                            <Text style={styles.thumbnailText}>
-                                {playlist.name}
-                            </Text>
-                        </View>
-                    ))}
+                                <Text style={styles.thumbnailText}>
+                                    {playlist.name}
+                                </Text>
+                            </View>
+                        ))}
                     </View>
                 </ScrollView>
 
@@ -63,9 +64,7 @@ export default class Playlists extends React.Component {
         }
 
         return (
-            <View style={styles.thumbnailWrapper}>
-                <ActivityIndicator size="large" color="#0000ff"/>
-            </View>
+           <PreLoader/>
         );
 
     }
@@ -74,7 +73,8 @@ export default class Playlists extends React.Component {
 const styles = StyleSheet.create({
     thumbnailWrapper: {
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        textAlign: 'center'
     },
     input: {
         backgroundColor: '#ffffff',
@@ -98,8 +98,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         flexWrap: 'wrap',
         flexDirection: 'row',
-        marginTop: 20
-
+        marginTop: 20,
+        backgroundColor: colors.backgroundPrimary
     },
     heading: {
         fontSize: 30,
@@ -118,7 +118,12 @@ const styles = StyleSheet.create({
         margin: 15
     },
     thumbnailText: {
-        textAlign: 'center'
+        textAlign: 'center',
+        color: colors.primary,
+        fontWeight: "bold"
+    },
+    pageWrapper: {
+        backgroundColor: colors.backgroundPrimary
     }
 
 })
