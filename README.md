@@ -1,4 +1,8 @@
-### Instalation
+### Development Requirements
+    https://facebook.github.io/react-native/docs/getting-started.html
+
+
+### Install dependencies
 
     npm install
 
