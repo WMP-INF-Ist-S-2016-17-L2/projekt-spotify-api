@@ -28,7 +28,7 @@ const PlaylistsNav = createStackNavigator({
 })
 
 const Tabs = createBottomTabNavigator({
-    Playlists: { screen: PlaylistsNav },
+    Playlists: { screen: Playlists },
     AddPlaylist: { screen: AddPlaylist },
     Search: {screen : Search}
 }, {

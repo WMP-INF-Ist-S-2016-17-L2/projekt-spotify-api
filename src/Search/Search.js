@@ -4,13 +4,11 @@ import {
     Text,
     StyleSheet,
     ScrollView,
-    TouchableOpacity, TextInput, TouchableWithoutFeedback, Image
+    TouchableOpacity, TextInput
 
 } from 'react-native';
 
 import {colors, padding} from '../theme';
-// import Playlists from './Playlists';
-// import PreLoader from "../components/PreLoader/PreLoader";
 
 export default class Search extends React.Component {
 
@@ -19,8 +17,9 @@ export default class Search extends React.Component {
         error: null,
         isLoaded: false,
         searchValue: '',
-        artists: [],
-        tracks: []
+        tracks: [],
+        activeIndex: null,
+        showingPlaylists: false
     }
 
 
@@ -28,6 +27,8 @@ export default class Search extends React.Component {
         this.setState({
             [key]: value
         })
+
+        this.runSearch();
     }
 
     runSearch = () => {
@@ -56,101 +57,116 @@ export default class Search extends React.Component {
                             isLoaded: true
                         });
                     }
-                    console.log(result);
                 }
             )
     }
 
-    // viewTrack = (track) => {
-    //     this.props.navigation.navigate('Track', {track});
-    // }
-
-    // deletePlaylist = () => {
-    //     fetch("https://api.spotify.com/v1/playlists/" + this.props.navigation.state.params.playlist.id + "/followers",
-    //         {
-    //             method: 'DELETE',
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //                 'Authorization': 'Bearer ' + this.props.screenProps.currToken
-    //             }
-    //
-    //         })
-    //         .then(res => res.json())
-    //         .then(
-    //             (result) => {
-    //                 if (result.error) { //Wystąpił błąd
-    //                     this.setState({
-    //                         error: result.error
-    //                     });
-    //                     return;
-    //                 }
-    //             },
-    //             (error) => {
-    //                 this.setState({error});
-    //                 return;
-    //             }
-    //         )
-    //
-    //     this.props.navigation.navigate('Playlists');
-    //     this.props.screenProps.removePlaylist(this.props.navigation.state.params.playlist)
-    // }
-
     selectPlaylist = () => {
-        console.log(this.props)
+        if (this.state.showingPlaylists) {
+            this.setState({
+                showingPlaylists: false
+            });
+        } else {
+            this.setState({
+                showingPlaylists: true
+            });
+        }
+    }
+
+    addToPlaylist = (i, e, playlist, track) => {
+
+        fetch(`https://api.spotify.com/v1/playlists/${playlist}/tracks`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + this.props.screenProps.currToken
+                },
+                body: JSON.stringify({
+                    uris: [track]
+                })
+
+            })
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    if (result.error) { //Wystąpił błąd
+                        this.setState({
+                            error: result.error
+                        });
+                        return;
+                    }
+                },
+                (error) => {
+                    this.setState({error});
+                    return;
+                }
+            )
     }
 
     render() {
-        console.log('tacks');
-        console.log(this.state.tracks);
-        let searchResults;
         let tracks;
-        let artists;
+
         if (this.state.tracks.length > 0) {
             tracks =
                 <View>
                     <Text style={styles.title}>Tracks</Text>
                     {this.state.tracks.map(track => (
                         <View key={track.id} style={styles.listItem}>
-                            {console.log(track)}
-                            <Text style={styles.buttonText}>
+
+                            <Text style={styles.trackName}>
+                                {track.artists.map(artist => (
+                                    <Text>{artist.name} - </Text>
+                                ))}
                                 {track.name}
                             </Text>
-                            <TouchableOpacity onPress={this.selectPlaylist} >
+
+                            <TouchableOpacity onPress={this.selectPlaylist}>
                                 <View>
-                                    <Text style={styles.buttonText}>Dodaj do playlisty</Text>
+                                    <Text style={styles.buttonText}>{this.state.showingPlaylists ? 'Hide playlists' : 'Add to playlist' }</Text>
                                 </View>
                             </TouchableOpacity>
+
+
+                            {this.props.screenProps.playlists.map(playlist => (
+                                <TouchableOpacity key={playlist.id}
+                                                  style={
+                                                      this.state.showingPlaylists
+                                                          ? styles.listItem
+                                                          : styles.hidden
+                                                  }
+
+                                                  onPress={() => this.addToPlaylist(this, playlist.id, playlist.id, track.uri)}>
+                                    <Text style={styles.playlistName}>{playlist.name}</Text>
+                                </TouchableOpacity>
+                            ))}
+
                         </View>
                     ))}
                 </View>
-
         }
 
         return (
             <ScrollView style={styles.container}>
+
+                <Text style={styles.heading}>Search for your favorite song</Text>
                 <TextInput
                     placeholder='Search'
                     value={this.state.searchValue}
                     onChangeText={val => this.onChangeText('searchValue', val)}
                     style={styles.input}
                 />
-                <TouchableOpacity onPress={this.runSearch} style={styles.button}>
-                    <View>
-                        <Text style={styles.buttonText}>Dodaj playliste</Text>
-                    </View>
-                </TouchableOpacity>
 
                 {tracks}
 
             </ScrollView>
         );
     }
-
-
 }
+
 styles = StyleSheet.create({
     container: {
-        backgroundColor: colors.backgroundPrimary
+        backgroundColor: colors.backgroundPrimary,
     },
     welcome: {
         fontSize: 20,
@@ -170,7 +186,7 @@ styles = StyleSheet.create({
         paddingVertical: padding.paddingVertical
     },
     buttonText: {
-        color: '#ffffff'
+        color: colors.primary
     },
     listItem: {
         borderBottomColor: colors.primary,
@@ -195,7 +211,23 @@ styles = StyleSheet.create({
         textAlign: 'center',
         color: colors.textColor,
         fontSize: 20,
-        marginBottom: 15
+        marginBottom: 15,
+        marginTop: 15
+    },
+    playlistName: {
+        color: colors.textColor,
+        marginBottom: 10
+    },
+    hidden: {
+        display: 'none'
+    },
+    artistName: {
+        color: colors.fadedTextColor
+    },
+    heading: {
+        fontSize: 26,
+        textAlign: 'center',
+        margin: 10,
+        color: '#fff'
     }
-
 });

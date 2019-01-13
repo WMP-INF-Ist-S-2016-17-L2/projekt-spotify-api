@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 import {colors} from "../theme";
 import PreLoader from "../components/PreLoader/PreLoader";
-import Search from "../Search/Search";
 
 export default class Playlists extends React.Component {
 
@@ -22,7 +21,6 @@ export default class Playlists extends React.Component {
         if (this.props.screenProps.playlists.length > 0) {
             return (
                 <ScrollView style={styles.pageWrapper}>
-                    <Search token={this.props.screenProps.currToken}/>
                     <View style={styles.container}>
                         {this.props.screenProps.playlists.map(playlist => (
                             <View key={playlist.id} style={styles.thumbnailWrapper}>

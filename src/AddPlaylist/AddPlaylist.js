@@ -25,7 +25,9 @@ export default class AddPlaylist extends React.Component {
     }
 
     submit = () => {
-        if (this.state.playlist === '') {return}
+        if (this.state.playlist === '') {
+            return
+        }
 
         fetch("https://api.spotify.com/v1/users/g5rfxuys94xd8wsdayhuh30lx/playlists",
             {
@@ -64,16 +66,16 @@ export default class AddPlaylist extends React.Component {
     render() {
         return (
             <View style={styles.container}>
-                <Text style={styles.heading}>Stwórz nową playliste</Text>
+                <Text style={styles.heading}>Create new playlist</Text>
                 <TextInput
-                    placeholder='Nazwa playlisty'
+                    placeholder='Playlist name'
                     value={this.state.playlist}
                     onChangeText={val => this.onChangeText('playlist', val)}
                     style={styles.input}
                 />
                 <TouchableOpacity onPress={this.submit} style={styles.button}>
                     <View>
-                        <Text style={styles.buttonText}>Dodaj playliste</Text>
+                        <Text style={styles.buttonText}>Add playlist</Text>
                     </View>
                 </TouchableOpacity>
             </View>
