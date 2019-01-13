@@ -138,14 +138,14 @@ export default class Playlist extends React.Component {
         return (
             <View style={styles.container}>
                 <Text style={styles.welcome}>
-                    Playlista jest pusta
+                    Playlist is empty
                 </Text>
                 <TouchableOpacity
                     onPress={() => this.deletePlaylist()}
                 >
                     <View style={styles.button}>
                         <Text style={styles.buttonText}>
-                            Usuń playliste
+                            Delete playlist
                         </Text>
                     </View>
                 </TouchableOpacity>
@@ -166,7 +166,8 @@ const styles = StyleSheet.create({
     welcome: {
         fontSize: 20,
         textAlign: 'center',
-        margin: 10
+        margin: 10,
+        color: colors.textColor
     },
     error: {
         color: colors.error
