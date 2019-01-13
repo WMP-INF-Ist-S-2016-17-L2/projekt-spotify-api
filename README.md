@@ -1,16 +1,9 @@
-npm run android
+### Instalation
 
+    npm install
 
-ctrl+shirt + A
-AVD
+### Running application
 
-SDK
+    enable device emulator or plug in real device with enabled USB debugger
 
-adb reverse tcp:8081 tcp:8081
-
-C:\Users\bkvtvw2yxf2xwwyjp2cb\AppData\Local\Android\Sdk
-
-
-adb devices
-
-react-native run-android
+    react-native run-android
